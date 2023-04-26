@@ -220,7 +220,7 @@ function processRequest(req, res) {
     // Get and parse parameters
     let link;
 
-    console.log(req.query.url);
+    console.log(req.query);
 
     if ('url' in req.query) {
         link = new InspectURL(req.query.url);
