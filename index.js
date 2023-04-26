@@ -158,71 +158,8 @@ if (CONFIG.rate_limit && CONFIG.rate_limit.enable) {
     }))
 }
 
-app.get('/float', function (req, res) {
-    // Get and parse parameters
-    let link;
-
-    if ('url' in req.query) {
-        link = new InspectURL(req.query.url);
-    }
-    else if ('a' in req.query && 'd' in req.query && ('s' in req.query || 'm' in req.query)) {
-        link = new InspectURL(req.query);
-    }
-
-    if (!link || !link.getParams()) {
-        return errors.InvalidInspect.respond(res);
-    }
-
-    const job = new Job(req, res, /* bulk */ false);
-
-    let price;
-
-    if (canSubmitPrice(req.query.priceKey, link, req.query.price)) {
-        price = parseInt(req.query.price);
-    }
-
-    job.add(link, price);
-
-    try {
-        handleJob(job);
-    } catch (e) {
-        winston.warn(e);
-        errors.GenericBad.respond(res);
-    }
-});
-
-app.get('/', function (req, res) {
-    // Get and parse parameters
-    let link;
-
-    if ('url' in req.query) {
-        link = new InspectURL(req.query.url);
-    }
-    else if ('a' in req.query && 'd' in req.query && ('s' in req.query || 'm' in req.query)) {
-        link = new InspectURL(req.query);
-    }
-
-    if (!link || !link.getParams()) {
-        return errors.InvalidInspect.respond(res);
-    }
-
-    const job = new Job(req, res, /* bulk */ false);
-
-    let price;
-
-    if (canSubmitPrice(req.query.priceKey, link, req.query.price)) {
-        price = parseInt(req.query.price);
-    }
-
-    job.add(link, price);
-
-    try {
-        handleJob(job);
-    } catch (e) {
-        winston.warn(e);
-        errors.GenericBad.respond(res);
-    }
-});
+app.get('/float', processRequest);
+app.get('/', processRequest);
 
 app.post('/bulk', (req, res) => {
     if (!req.body || (CONFIG.bulk_key && req.body.bulk_key != CONFIG.bulk_key)) {
@@ -239,6 +176,8 @@ app.post('/bulk', (req, res) => {
 
     const job = new Job(req, res, /* bulk */ true);
 
+
+
     for (const data of req.body.links) {
         const link = new InspectURL(data.link);
         if (!link.valid) {
@@ -250,6 +189,8 @@ app.post('/bulk', (req, res) => {
         if (canSubmitPrice(req.body.priceKey, link, data.price)) {
             price = parseInt(req.query.price);
         }
+
+        winston.info(link);
 
         job.add(link, price);
     }
@@ -274,6 +215,41 @@ app.get('/stats', (req, res) => {
 const http_server = require('http').Server(app);
 http_server.listen(CONFIG.http.port);
 winston.info('Listening for HTTP on port: ' + CONFIG.http.port);
+
+
+function processRequest(req, res) {
+    // Get and parse parameters
+    let link;
+
+    if ('url' in req.query) {
+        link = new InspectURL(req.query.url);
+    }
+    else if ('a' in req.query && 'd' in req.query && ('s' in req.query || 'm' in req.query)) {
+        link = new InspectURL(req.query);
+    }
+
+    if (!link || !link.getParams()) {
+        return errors.InvalidInspect.respond(res);
+    }
+
+    const job = new Job(req, res, /* bulk */ false);
+
+    let price;
+
+    if (canSubmitPrice(req.query.priceKey, link, req.query.price)) {
+        price = parseInt(req.query.price);
+    }
+
+    job.add(link, price);
+
+    try {
+        handleJob(job);
+    } catch (e) {
+        winston.warn(e);
+        errors.GenericBad.respond(res);
+    }
+}
+
 
 queue.process(CONFIG.logins.length, botController, async (job) => {
     const itemData = await botController.lookupFloat(job.data.link);
