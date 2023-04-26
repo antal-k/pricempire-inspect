@@ -51,7 +51,7 @@ fs.readFile('accounts.txt', 'utf8', async (err, data) => {
 
         botController.addBot({ user, pass }, settings);
 
-        await sleep(1000);
+        await sleep(100);
 
     }
 });
