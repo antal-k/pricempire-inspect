@@ -158,6 +158,39 @@ if (CONFIG.rate_limit && CONFIG.rate_limit.enable) {
     }))
 }
 
+app.get('/float', function (req, res) {
+    // Get and parse parameters
+    let link;
+
+    if ('url' in req.query) {
+        link = new InspectURL(req.query.url);
+    }
+    else if ('a' in req.query && 'd' in req.query && ('s' in req.query || 'm' in req.query)) {
+        link = new InspectURL(req.query);
+    }
+
+    if (!link || !link.getParams()) {
+        return errors.InvalidInspect.respond(res);
+    }
+
+    const job = new Job(req, res, /* bulk */ false);
+
+    let price;
+
+    if (canSubmitPrice(req.query.priceKey, link, req.query.price)) {
+        price = parseInt(req.query.price);
+    }
+
+    job.add(link, price);
+
+    try {
+        handleJob(job);
+    } catch (e) {
+        winston.warn(e);
+        errors.GenericBad.respond(res);
+    }
+});
+
 app.get('/', function (req, res) {
     // Get and parse parameters
     let link;
