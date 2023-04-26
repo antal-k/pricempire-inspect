@@ -240,6 +240,7 @@ function processRequest(req, res) {
         price = parseInt(req.query.price);
     }
 
+    winston.info(link);
     job.add(link, price);
 
     try {
