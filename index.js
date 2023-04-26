@@ -51,6 +51,7 @@ fs.readFile('accounts.txt', 'utf8', async (err, data) => {
 
         botController.addBot({ user, pass }, settings);
 
+        return;
         await sleep(100);
 
     }
@@ -219,6 +220,8 @@ function processRequest(req, res) {
     // Get and parse parameters
     let link;
 
+    console.log(req.query.url);
+
     if ('url' in req.query) {
         link = new InspectURL(req.query.url);
     }
@@ -238,7 +241,6 @@ function processRequest(req, res) {
         price = parseInt(req.query.price);
     }
 
-    winston.info(link);
     job.add(link, price);
 
     try {
