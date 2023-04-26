@@ -5,3 +5,4 @@ sentry
 game_files
 .DS_Store
 .idea
+accounts.txt

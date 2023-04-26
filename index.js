@@ -17,7 +17,8 @@ const winston = require('winston'),
     postgres = new (require('./lib/postgres'))(CONFIG.database_url, CONFIG.enable_bulk_inserts),
     gameData = new (require('./lib/game_data'))(CONFIG.game_files_update_interval, CONFIG.enable_game_file_updates),
     errors = require('./errors'),
-    Job = require('./lib/job');
+    Job = require('./lib/job'),
+    fs = require('fs');
 
 if (CONFIG.max_simultaneous_requests === undefined) {
     CONFIG.max_simultaneous_requests = 1;
@@ -34,11 +35,34 @@ if (args.steam_data) {
     CONFIG.bot_settings.steam_user.dataDirectory = args.steam_data;
 }
 
+function sleep(millis) {
+    return new Promise((resolve) => setTimeout(resolve, millis));
+}
+
+fs.readFile('accounts.txt', 'utf8', async (err, data) => {
+    if (err) {
+        console.error(err);
+        return;
+    }
+    const lines = data.split('\n');
+    for await (const line of lines) {
+        const [user, pass, email, ep] = line.split(':');
+        const settings = Object.assign({}, CONFIG.bot_settings);
+
+        botController.addBot({ user, pass }, settings);
+
+        await sleep(1000);
+
+    }
+});
+
+/*
 for (let [i, loginData] of CONFIG.logins.entries()) {
     const settings = Object.assign({}, CONFIG.bot_settings);
 
     botController.addBot(loginData, settings);
 }
+*/
 
 postgres.connect();
 
