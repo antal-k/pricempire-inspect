@@ -51,8 +51,7 @@ fs.readFile('accounts.txt', 'utf8', async (err, data) => {
 
         botController.addBot({ user, pass }, settings);
 
-        return;
-        await sleep(100);
+        await sleep(50);
 
     }
 });
@@ -281,3 +280,12 @@ queue.on('job failed', (job, err) => {
 
     job.data.job.setResponse(params.a, errors.TTLExceeded);
 });
+
+process.on('uncaughtException', err => {
+    console.log(`Uncaught Exception: ${err.message}`)
+    // process.exit(1)
+})
+process.on('unhandledRejection', (reason, promise) => {
+    console.log('Unhandled rejection at ', promise, `reason: ${err.message}`)
+    // process.exit(1)
+})
