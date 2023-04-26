@@ -51,7 +51,7 @@ fs.readFile('accounts.txt', 'utf8', async (err, data) => {
 
         botController.addBot({ user, pass }, settings);
 
-        await sleep(100);
+        await sleep(500);
 
     }
 });
@@ -175,8 +175,6 @@ app.post('/bulk', (req, res) => {
     }
 
     const job = new Job(req, res, /* bulk */ true);
-
-
 
     for (const data of req.body.links) {
         const link = new InspectURL(data.link);
