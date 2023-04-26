@@ -36,18 +36,6 @@ if (args.steam_data) {
 
 for (let [i, loginData] of CONFIG.logins.entries()) {
     const settings = Object.assign({}, CONFIG.bot_settings);
-    if (CONFIG.proxies && CONFIG.proxies.length > 0) {
-        const proxy = CONFIG.proxies[i % CONFIG.proxies.length];
-
-        if (proxy.startsWith('http://')) {
-            settings.steam_user = Object.assign({}, settings.steam_user, {httpProxy: proxy});
-        } else if (proxy.startsWith('socks5://')) {
-            settings.steam_user = Object.assign({}, settings.steam_user, {socksProxy: proxy});
-        } else {
-            console.log(`Invalid proxy '${proxy}' in config, must prefix with http:// or socks5://`);
-            process.exit(1);
-        }
-    }
 
     botController.addBot(loginData, settings);
 }
@@ -63,7 +51,7 @@ app.use(function (req, res, next) {
     }
     next();
 });
-app.use(bodyParser.json({limit: '5mb'}));
+app.use(bodyParser.json({ limit: '5mb' }));
 
 app.use(function (error, req, res, next) {
     // Handle bodyParser errors
@@ -146,7 +134,7 @@ if (CONFIG.rate_limit && CONFIG.rate_limit.enable) {
     }))
 }
 
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
     // Get and parse parameters
     let link;
 
