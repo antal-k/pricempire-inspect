@@ -6,7 +6,7 @@ const optionDefinitions = [
 ];
 
 const winston = require('winston'),
-    args = require('command-line-args')(optionDefinitions),
+    args = require('command-line-args')(optionDefinitions, { partial: true }),
     bodyParser = require('body-parser'),
     rateLimit = require('express-rate-limit'),
     utils = require('./lib/utils'),
