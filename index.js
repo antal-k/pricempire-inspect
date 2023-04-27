@@ -73,7 +73,7 @@ if (nodeCluster.isMaster) {
             }
 
             const perCluster = botsCount / clusterCount;
-            const clusterMax = perCluster * (process.env.NODE_APP_INSTANCE + 1);
+            const clusterMax = perCluster * ((process.env.NODE_APP_INSTANCE * 1) + 1);
 
             const lines = data.split('\n').slice(clusterMax - perCluster, clusterMax);
 
