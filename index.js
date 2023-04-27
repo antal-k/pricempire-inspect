@@ -23,9 +23,7 @@ const winston = require('winston'),
 
 const nodeCluster = require('cluster');
 
-const numCPUs = os.cpus().length;
-
-const clusterCount = numCPUs;
+const clusterCount = 10;
 
 const botsCount = 5000;
 
@@ -77,7 +75,7 @@ if (nodeCluster.isMaster) {
 
         const lines = data.split('\n').slice(clusterMax - perCluster, clusterMax);
 
-        console.log('_---------------------', process.env.NODE_APP_INSTANCE, lines.length, clusterMax, perCluster, clusterCount);
+        console.log('_---------------------', process.env.NODE_APP_INSTANCE, lines.length, clusterMax, perCluster, clusterCount, botsCount);
 
         for await (const line of lines) {
             const [user, pass, email, ep] = line.split(':');
