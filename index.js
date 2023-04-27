@@ -86,11 +86,11 @@ if (nodeCluster.isMaster) {
             });
             console.log('---------------------------');
 
-            for await (const line of lines) {
+            for await (const [index, line] of lines.entries()) {
                 const [user, pass, email, ep] = line.split(':');
                 const settings = Object.assign({}, CONFIG.bot_settings);
 
-                botController.addBot({ user, pass }, settings);
+                botController.addBot({ user, pass, session: Math.round(index / 10) }, settings);
 
                 await sleep(100);
 
