@@ -190,6 +190,7 @@ if (cluster.isPrimary) {
             bots_total: botController.bots.length,
             queue_size: queue.queue.length,
             queue_concurrency: queue.concurrency,
+            clusterId: process.env.clusterId,
         });
     });
 
