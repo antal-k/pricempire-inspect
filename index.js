@@ -24,6 +24,8 @@ if (CONFIG.max_simultaneous_requests === undefined) {
     CONFIG.max_simultaneous_requests = 1;
 }
 
+const botsCount = 10000;
+
 winston.level = CONFIG.logLevel || 'debug';
 
 if (CONFIG.logins.length === 0) {
@@ -253,7 +255,7 @@ function processRequest(req, res) {
 }
 
 
-queue.process(CONFIG.logins.length, botController, async (job) => {
+queue.process(botsCount, botController, async (job) => {
     const itemData = await botController.lookupFloat(job.data.link);
     winston.debug(`Received itemData for ${job.data.link.getParams().a}`);
 
