@@ -19,9 +19,12 @@ const winston = require('winston'),
     errors = require('./errors'),
     Job = require('./lib/job'),
     fs = require('fs'),
+    os = require('os'),
     cluster = require('node:cluster');
 
-const clusterCount = 10;
+const numCPUs = os.cpus().length;
+
+const clusterCount = numCPUs;
 
 const botsCount = 5000;
 
