@@ -64,29 +64,32 @@ if (nodeCluster.isMaster) {
         CONFIG.bot_settings.steam_user.dataDirectory = args.steam_data;
     }
 
-    fs.readFile('accounts.txt', 'utf8', async (err, data) => {
-        if (err) {
-            console.error(err);
-            return;
-        }
+    setTimeout(() => {
 
-        const perCluster = botsCount / clusterCount;
-        const clusterMax = perCluster * (process.env.NODE_APP_INSTANCE + 1);
+        fs.readFile('accounts.txt', 'utf8', async (err, data) => {
+            if (err) {
+                console.error(err);
+                return;
+            }
 
-        const lines = data.split('\n').slice(clusterMax - perCluster, clusterMax);
+            const perCluster = botsCount / clusterCount;
+            const clusterMax = perCluster * (process.env.NODE_APP_INSTANCE + 1);
 
-        console.log('_---------------------', process.env.NODE_APP_INSTANCE, lines.length, clusterMax, perCluster, clusterCount, botsCount);
+            const lines = data.split('\n').slice(clusterMax - perCluster, clusterMax);
 
-        for await (const line of lines) {
-            const [user, pass, email, ep] = line.split(':');
-            const settings = Object.assign({}, CONFIG.bot_settings);
+            console.log('----------------------', process.env.NODE_APP_INSTANCE, lines.length, clusterMax, perCluster, clusterCount, botsCount);
 
-            botController.addBot({ user, pass }, settings);
+            for await (const line of lines) {
+                const [user, pass, email, ep] = line.split(':');
+                const settings = Object.assign({}, CONFIG.bot_settings);
 
-            await sleep(5000);
+                botController.addBot({ user, pass }, settings);
 
-        }
-    });
+                await sleep(5000);
+
+            }
+        });
+    }, process.env.NODE_APP_INSTANCE * 2000);
 
     /*
     for (let [i, loginData] of CONFIG.logins.entries()) {
