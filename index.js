@@ -199,7 +199,7 @@ if (cluster.isPrimary) {
     winston.info('Listening for HTTP on port: ' + CONFIG.http.port);
 
 
-    queue.process(botsCount, botController, async (job) => {
+    queue.process(botsCount / clusterCount, botController, async (job) => {
         const itemData = await botController.lookupFloat(job.data.link);
         winston.debug(`Received itemData for ${job.data.link.getParams().a}`);
 
