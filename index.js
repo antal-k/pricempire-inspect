@@ -21,9 +21,9 @@ const winston = require('winston'),
     fs = require('fs'),
     cluster = require('node:cluster');
 
-const clusterCount = 20;
+const clusterCount = 10;
 
-const botsCount = 10000;
+const botsCount = 5000;
 
 
 if (cluster.isPrimary) {
