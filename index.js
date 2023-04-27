@@ -53,6 +53,7 @@ if (cluster.isPrimary) {
     if (args.steam_data) {
         CONFIG.bot_settings.steam_user.dataDirectory = args.steam_data;
     }
+
     fs.readFile('accounts.txt', 'utf8', async (err, data) => {
         if (err) {
             console.error(err);
@@ -72,7 +73,7 @@ if (cluster.isPrimary) {
 
             botController.addBot({ user, pass }, settings);
 
-            await sleep(1000);
+            await sleep(5000);
 
         }
     });
