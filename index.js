@@ -66,6 +66,8 @@ if (cluster.isPrimary) {
 
         const lines = data.split('\n').slice(clusterMax - perCluster, clusterMax);
 
+        console.log(process.env.clusterId, lines.length);
+
         for await (const line of lines) {
             const [user, pass, email, ep] = line.split(':');
             const settings = Object.assign({}, CONFIG.bot_settings);
