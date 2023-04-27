@@ -159,6 +159,7 @@ if (CONFIG.rate_limit && CONFIG.rate_limit.enable) {
 }
 
 app.get('/float', processRequest);
+app.post('/float', processRequest);
 app.get('/', processRequest);
 
 app.post('/bulk', (req, res) => {
@@ -223,8 +224,9 @@ function processRequest(req, res) {
 
     if ('url' in req.query) {
         link = new InspectURL(req.query.url);
-    }
-    else if ('a' in req.query && 'd' in req.query && ('s' in req.query || 'm' in req.query)) {
+    } else if (url in req.body) {
+        link = new InspectURL(req.body.url);
+    } else if ('a' in req.query && 'd' in req.query && ('s' in req.query || 'm' in req.query)) {
         link = new InspectURL(req.query);
     }
 
