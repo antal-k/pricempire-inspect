@@ -27,16 +27,19 @@ const botsCount = 10000;
 
 
 if (cluster.isPrimary) {
-    console.log(`Primary ${process.pid} is running`);
 
-    // Fork workers.
-    for (let i = 1; i < clusterCount + 1; i++) {
-        cluster.fork({
-            clusterId: i
-        });
+    (async () => {
+        console.log(`Primary ${process.pid} is running`);
 
-        await sleep(5000);
-    }
+        // Fork workers.
+        for (let i = 1; i < clusterCount + 1; i++) {
+            cluster.fork({
+                clusterId: i
+            });
+
+            await sleep(5000);
+        }
+    })();
 
     cluster.on('fork', (worker) => {
         console.log('worker is dead:', worker.isDead());
