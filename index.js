@@ -21,7 +21,7 @@ const winston = require('winston'),
     fs = require('fs'),
     cluster = require('node:cluster');
 
-const clusterCount = 10;
+const clusterCount = 20;
 
 const botsCount = 10000;
 
