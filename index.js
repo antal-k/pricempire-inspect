@@ -77,7 +77,7 @@ if (nodeCluster.isMaster) {
 
         const lines = data.split('\n').slice(clusterMax - perCluster, clusterMax);
 
-        console.log(process.env.NODE_APP_INSTANCE, lines.length);
+        console.log('_---------------------', process.env.NODE_APP_INSTANCE, lines.length, clusterMax, perCluster, clusterCount);
 
         for await (const line of lines) {
             const [user, pass, email, ep] = line.split(':');
