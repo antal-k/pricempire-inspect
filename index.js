@@ -72,7 +72,7 @@ if (cluster.isPrimary) {
 
             botController.addBot({ user, pass }, settings);
 
-            await sleep(100);
+            await sleep(1000);
 
         }
     });
