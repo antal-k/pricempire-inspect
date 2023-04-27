@@ -19,8 +19,9 @@ const winston = require('winston'),
     errors = require('./errors'),
     Job = require('./lib/job'),
     fs = require('fs'),
-    os = require('os'),
-    cluster = require('node:cluster');
+    os = require('os');
+
+const nodeCluster = require('cluster');
 
 const numCPUs = os.cpus().length;
 
@@ -29,20 +30,22 @@ const clusterCount = numCPUs;
 const botsCount = 5000;
 
 
-if (cluster.isMaster) {
+if (nodeCluster.isMaster) {
+
+    console.log('is master');
 
     (async () => {
         console.log(`Primary ${process.pid} is running`);
 
         // Fork workers.
         for (let i = 1; i < clusterCount + 1; i++) {
-            cluster.fork({
+            nodeCluster.fork({
                 clusterId: i
             });
 
-            cluster.on('exit', (worker, code, signal) => {
+            nodeCluster.on('exit', (worker, code, signal) => {
                 console.log('worker %d died (%s). restarting...', worker.process.pid, signal || code);
-                cluster.fork({
+                nodeCluster.fork({
                     clusterId: i
                 });
             });
