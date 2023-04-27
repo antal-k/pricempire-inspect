@@ -203,7 +203,7 @@ if (nodeCluster.isMaster) {
             bots_total: botController.bots.length,
             queue_size: queue.queue.length,
             queue_concurrency: queue.concurrency,
-            clusterId: process.env.clusterId,
+            cluster_id: process.env.NODE_APP_INSTANCE,
         });
     });
 
