@@ -34,6 +34,8 @@ if (cluster.isPrimary) {
         cluster.fork({
             clusterId: i
         });
+
+        await sleep(5000);
     }
 
     cluster.on('fork', (worker) => {
