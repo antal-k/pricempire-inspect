@@ -92,7 +92,7 @@ if (nodeCluster.isMaster) {
 
                 botController.addBot({ user, pass, session: Math.round(index / 10) }, settings);
 
-                await sleep(100);
+                await sleep(1000);
 
             }
         });
