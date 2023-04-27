@@ -32,9 +32,7 @@ if (cluster.isPrimary) {
     // Fork workers.
     for (let i = 0; i < clusterCount; i++) {
         cluster.fork({
-            env: {
-                'clusterId': i
-            }
+            clusterId: i
         });
     }
 
