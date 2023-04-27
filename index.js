@@ -57,7 +57,7 @@ if (nodeCluster.isMaster) {
 
 } else {
 
-    console.log(cluster);
+    console.log(nodeCluster);
 
     if (CONFIG.max_simultaneous_requests === undefined) {
         CONFIG.max_simultaneous_requests = 1;
