@@ -61,6 +61,8 @@ if (cluster.isPrimary) {
             return;
         }
 
+        console.log(process);
+
         const perCluster = botsCount / clusterCount;
         const clusterMax = perCluster * process.env.clusterId;
 
