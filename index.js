@@ -57,8 +57,6 @@ if (nodeCluster.isMaster) {
 
 } else {
 
-    console.log(process.env.NODE_APP_INSTANCE);
-
     if (CONFIG.max_simultaneous_requests === undefined) {
         CONFIG.max_simultaneous_requests = 1;
     }
@@ -75,7 +73,7 @@ if (nodeCluster.isMaster) {
         }
 
         const perCluster = botsCount / clusterCount;
-        const clusterMax = perCluster * process.env.clusterId;
+        const clusterMax = perCluster * (process.env.NODE_APP_INSTANCE + 1);
 
         const lines = data.split('\n').slice(clusterMax - perCluster, clusterMax);
 
