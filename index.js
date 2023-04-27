@@ -37,17 +37,18 @@ if (cluster.isPrimary) {
                 clusterId: i
             });
 
+            cluster.on('exit', (worker, code, signal) => {
+                console.log('worker %d died (%s). restarting...', worker.process.pid, signal || code);
+                cluster.fork({
+                    clusterId: i
+                });
+            });
+
             await sleep(5000);
         }
     })();
 
-    cluster.on('fork', (worker) => {
-        console.log('worker is dead:', worker.isDead());
-    });
 
-    cluster.on('exit', (worker, code, signal) => {
-        console.log('worker is dead:', worker.isDead());
-    });
 } else {
 
     if (CONFIG.max_simultaneous_requests === undefined) {
