@@ -26,7 +26,7 @@ const clusterCount = 10;
 const botsCount = 5000;
 
 
-if (cluster.isPrimary) {
+if (cluster.isMaster) {
 
     (async () => {
         console.log(`Primary ${process.pid} is running`);
