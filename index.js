@@ -47,8 +47,6 @@ if (nodeCluster.isMaster) {
                     clusterId: i
                 });
             });
-
-            await sleep(5000);
         }
     })();
 
@@ -94,7 +92,7 @@ if (nodeCluster.isMaster) {
 
                 botController.addBot({ user, pass }, settings);
 
-                await sleep(5000);
+                await sleep(100);
 
             }
         });
