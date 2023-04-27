@@ -30,7 +30,7 @@ if (cluster.isPrimary) {
     console.log(`Primary ${process.pid} is running`);
 
     // Fork workers.
-    for (let i = 0; i < clusterCount; i++) {
+    for (let i = 1; i < clusterCount + 1; i++) {
         cluster.fork({
             clusterId: i
         });
@@ -58,8 +58,6 @@ if (cluster.isPrimary) {
             console.error(err);
             return;
         }
-
-        console.log(process);
 
         const perCluster = botsCount / clusterCount;
         const clusterMax = perCluster * process.env.clusterId;
