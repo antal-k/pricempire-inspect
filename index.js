@@ -23,9 +23,9 @@ const winston = require('winston'),
 
 const nodeCluster = require('cluster');
 
-const clusterCount = 10;
+const clusterCount = 20;
 
-const botsCount = 5000;
+const botsCount = 10000;
 
 
 if (nodeCluster.isMaster) {
