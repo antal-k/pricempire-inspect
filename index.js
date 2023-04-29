@@ -46,7 +46,7 @@ if (nodeCluster.isMaster) {
                     clusterId: i
                 });
             });
-            cluster.workers[id].on('message', messageHandler);
+            nodeCluster.on('message', messageHandler);
         }
     })();
 
