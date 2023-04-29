@@ -266,8 +266,6 @@ function sleep(millis) {
 
 async function handleJob(job) {
 
-    process.send({ cmd: 'handleJob' });
-
     // See which items have already been cached
     const itemData = await postgres.getItemData(job.getRemainingLinks().map(e => e.link));
     for (let item of itemData) {
