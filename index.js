@@ -95,7 +95,7 @@ if (nodeCluster.isMaster) {
 
     setTimeout(()=>{
         process.exit(1);
-    }, CONFIG.cluster_life * 60 * 60 * 1000);
+    }, CONFIG.cluster_life * 60 * 60 * 1000 + (parseInt(process.env.NODE_APP_INSTANCE) * 15 * 60 * 1000)); // delay the clusters 15mins
 
     /*
     for (let [i, loginData] of CONFIG.logins.entries()) {
