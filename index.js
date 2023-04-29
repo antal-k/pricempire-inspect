@@ -49,12 +49,6 @@ if (nodeCluster.isMaster) {
             nodeCluster.on('message', messageHandler);
         }
     })();
-
-    setInterval(() => {
-        winston.info(`RPS: ${jobRequests}/s`);
-        jobRequests = 0;
-    }, 1000);
-
     function messageHandler(msg) {
         if (msg.cmd && msg.cmd === 'handleJob') {
             jobRequests += 1;
@@ -63,6 +57,12 @@ if (nodeCluster.isMaster) {
 
 
 } else {
+
+    setInterval(() => {
+        winston.info(`RPS: ${jobRequests}/s`);
+        jobRequests = 0;
+    }, 1000);
+
 
     if (CONFIG.max_simultaneous_requests === undefined) {
         CONFIG.max_simultaneous_requests = 1;
