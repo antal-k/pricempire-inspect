@@ -211,7 +211,7 @@ if (nodeCluster.isMaster) {
         try {
             handleJob(job);
         } catch (e) {
-            winston.warn(e);
+            winston.debug(e);
             errors.GenericBad.respond(res);
         }
     });
@@ -256,18 +256,18 @@ if (nodeCluster.isMaster) {
 
     queue.on('job failed', (job, err) => {
         const params = job.data.link.getParams();
-        winston.warn(`Job Failed! S: ${params.s} A: ${params.a} D: ${params.d} M: ${params.m} IP: ${job.ip}, Err: ${(err || '').toString()}`);
+        winston.debug(`Job Failed! S: ${params.s} A: ${params.a} D: ${params.d} M: ${params.m} IP: ${job.ip}, Err: ${(err || '').toString()}`);
 
         job.data.job.setResponse(params.a, errors.TTLExceeded);
     });
 }
 
 process.on('uncaughtException', err => {
-    console.log(`Uncaught Exception: ${err.message}`)
+    // console.log(`Uncaught Exception: ${err.message}`)
     // process.exit(1)
 })
 process.on('unhandledRejection', (reason, promise) => {
-    console.log('Unhandled rejection at ', promise, `reason: ${reason.message}`)
+    // console.log('Unhandled rejection at ', promise, `reason: ${reason.message}`)
     // process.exit(1)
 })
 
@@ -346,7 +346,7 @@ function processRequest(req, res) {
     try {
         handleJob(job);
     } catch (e) {
-        winston.warn(e);
+        winston.debug(e);
         errors.GenericBad.respond(res);
     }
 }
