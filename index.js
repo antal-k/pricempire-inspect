@@ -31,8 +31,6 @@ let jobRequests = 0;
 
 if (nodeCluster.isMaster) {
 
-    console.log('is master');
-
     (async () => {
         console.log(`Primary ${process.pid} is running`);
 
@@ -322,8 +320,6 @@ function canSubmitPrice(key, link, price) {
 function processRequest(req, res) {
     // Get and parse parameters
     let link;
-
-    console.log(req.query, req.body);
 
     if ('url' in req.query) {
         link = new InspectURL(req.query.url);
