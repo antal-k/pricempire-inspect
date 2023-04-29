@@ -93,6 +93,10 @@ if (nodeCluster.isMaster) {
         });
     }, process.env.NODE_APP_INSTANCE * 2000);
 
+    setTimeout(()=>{
+        process.exit(1);
+    }, CONFIG.cluster_life * 60 * 60 * 1000);
+
     /*
     for (let [i, loginData] of CONFIG.logins.entries()) {
         const settings = Object.assign({}, CONFIG.bot_settings);
@@ -159,7 +163,7 @@ if (nodeCluster.isMaster) {
     app.get('/float', processRequest);
     app.post('/float', processRequest);
     app.get('/', processRequest);
-
+    
     app.post('/bulk', (req, res) => {
         if (!req.body || (CONFIG.bulk_key && req.body.bulk_key != CONFIG.bulk_key)) {
             return errors.BadSecret.respond(res);
