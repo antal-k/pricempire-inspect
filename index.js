@@ -46,23 +46,11 @@ if (nodeCluster.isMaster) {
                     clusterId: i
                 });
             });
-            nodeCluster.on('message', messageHandler);
         }
     })();
-    function messageHandler(msg) {
-        if (msg.cmd && msg.cmd === 'handleJob') {
-            jobRequests += 1;
-        }
-    }
 
 
 } else {
-
-    setInterval(() => {
-        winston.info(`RPS: ${jobRequests}/s`);
-        jobRequests = 0;
-    }, 1000);
-
 
     if (CONFIG.max_simultaneous_requests === undefined) {
         CONFIG.max_simultaneous_requests = 1;
