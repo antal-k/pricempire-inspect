@@ -105,7 +105,7 @@ if (nodeCluster.isMaster) {
 
                 botController.addBot({ user, pass, session: Math.round(index / 5) }, settings);
 
-                await sleep(5000);
+                await sleep(1000);
 
             }
         });
