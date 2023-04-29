@@ -229,8 +229,7 @@ if (nodeCluster.isMaster) {
         delete itemData.delay;
 
         // add the item info to the DB
-
-        //  await postgres.insertItemData(itemData.iteminfo, job.data.price);
+        await postgres.insertItemData(itemData.iteminfo, job.data.price);
 
         // Get rank, annotate with game files
         itemData.iteminfo = Object.assign(itemData.iteminfo, await postgres.getItemRank(itemData.iteminfo.a));
