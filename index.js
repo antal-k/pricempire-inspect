@@ -90,7 +90,7 @@ if (nodeCluster.isMaster) {
                 const [user, pass, email, ep] = line.split(':');
                 const settings = Object.assign({}, CONFIG.bot_settings);
 
-                botController.addBot({ user, pass, session: Math.round(index / 5) }, settings);
+                // botController.addBot({ user, pass, session: Math.round(index / 5) }, settings);
 
                 await sleep(5000);
 
