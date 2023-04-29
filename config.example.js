@@ -19,8 +19,9 @@ module.exports = {
             'auth': '2FA_TOKEN_2'
         }
     ],
-    // Optional HTTP/SOCKS5 proxies to auto-rotate for each bot in a round-robin
-    'proxies': [],
+    'bots_count': 5,
+    'cluster_count': 1,
+    'proxy_url': '[socks5|http]://[username][session]:[password]@[url]:[port]',
     // Bot settings
     'bot_settings': {
         // Amount of attempts for each request to Valve

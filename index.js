@@ -23,19 +23,13 @@ const winston = require('winston'),
 
 const nodeCluster = require('cluster');
 
-const clusterCount = 10;
-
-const botsCount = 5000;
-
-let jobRequests = 0;
-
 if (nodeCluster.isMaster) {
 
     (async () => {
         console.log(`Primary ${process.pid} is running`);
 
         // Fork workers.
-        for (let i = 1; i < clusterCount + 1; i++) {
+        for (let i = 1; i < CONFIG.cluster_count + 1; i++) {
             nodeCluster.fork({
                 clusterId: i
             });
@@ -69,11 +63,12 @@ if (nodeCluster.isMaster) {
                 return;
             }
 
-            const perCluster = botsCount / clusterCount;
+            const perCluster = CONFIG.bots_count / CONFIG.cluster_count;
             const clusterMax = perCluster * ((process.env.NODE_APP_INSTANCE * 1) + 1);
 
             const lines = data.split('\n').slice(clusterMax - perCluster, clusterMax);
 
+            /*
             console.log('---------------------------');
             console.table({
                 instanceId: process.env.NODE_APP_INSTANCE,
@@ -84,6 +79,7 @@ if (nodeCluster.isMaster) {
                 botsCount,
             });
             console.log('---------------------------');
+            */
 
             for await (const [index, line] of lines.entries()) {
                 const [user, pass, email, ep] = line.split(':');
@@ -219,7 +215,7 @@ if (nodeCluster.isMaster) {
     winston.info('Listening for HTTP on port: ' + CONFIG.http.port);
 
 
-    queue.process(botsCount / clusterCount, botController, async (job) => {
+    queue.process(CONFIG.bots_count / CONFIG.cluster_count, botController, async (job) => {
         const itemData = await botController.lookupFloat(job.data.link);
         winston.debug(`Received itemData for ${job.data.link.getParams().a}`);
 
