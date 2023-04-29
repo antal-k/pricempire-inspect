@@ -27,6 +27,7 @@ const clusterCount = 10;
 
 const botsCount = 5000;
 
+let jobRequests = 0;
 
 if (nodeCluster.isMaster) {
 
@@ -47,8 +48,20 @@ if (nodeCluster.isMaster) {
                     clusterId: i
                 });
             });
+            cluster.workers[id].on('message', messageHandler);
         }
     })();
+
+    setInterval(() => {
+        winston.info(`RPS: ${jobRequests}/s`);
+        jobRequests = 0;
+    }, 1000);
+
+    function messageHandler(msg) {
+        if (msg.cmd && msg.cmd === 'handleJob') {
+            jobRequests += 1;
+        }
+    }
 
 
 } else {
@@ -266,6 +279,9 @@ function sleep(millis) {
 }
 
 async function handleJob(job) {
+
+    process.send({ cmd: 'handleJob' });
+
     // See which items have already been cached
     const itemData = await postgres.getItemData(job.getRemainingLinks().map(e => e.link));
     for (let item of itemData) {
