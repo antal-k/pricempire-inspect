@@ -23,6 +23,14 @@ const winston = require('winston'),
     os = require('os');
 const nodeCluster = require('cluster');
 
+if (process.env.NODE_APP_INSTANCE === '1') {
+    setInterval(async () => {
+        const requests = await redis.get('requests');
+        redis.set('requests', 0);
+        redis.set('requests_last', requests);
+    }, 1000);
+}
+
 if (nodeCluster.isMaster) {
 
     (async () => {
@@ -43,11 +51,6 @@ if (nodeCluster.isMaster) {
         }
     })();
 
-    setInterval(async () => {
-        const requests = await redis.get('requests');
-        await redis.set('requests', 0);
-        redis.set('requests_last', requests);
-    }, 1000);
 
 
 } else {
