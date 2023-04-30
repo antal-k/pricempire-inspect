@@ -258,7 +258,7 @@ if (nodeCluster.isMaster) {
     });
 
     app.get('/stats', async (req, res) => {
-        const requests_last = JSON.parse(await redis.get('rqs_last'));
+        const requests_last = JSON.parse(await redis.get('rqs_last')).map(n => parseInt(n));
 
         const sum = requests_last.reduce((a, b) => a + b, 0);
         const avg = (sum / requests_last.length) || 0;
