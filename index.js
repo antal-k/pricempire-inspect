@@ -38,7 +38,6 @@ if (process.env.NODE_APP_INSTANCE === '1') {
         if (!requests_last) {
             requests_last = [];
         } else {
-            console.log(requests_last);
             requests_last = JSON.parse(requests_last);
 
             requests_last.reverse();
