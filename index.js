@@ -28,6 +28,11 @@ if (process.env.NODE_APP_INSTANCE === '1') {
         const requests = await redis.get('requests');
         redis.set('requests', 0);
 
+        redis.incrBy('bots_online', 0);
+        redis.incrBy('bots_total', 0);
+        redis.incrBy('queue_size', 0);
+        redis.incrBy('queue_concurrency', 0);
+
         let requests_last = await redis.get('rqs_last');
 
         if (!requests_last) {
@@ -48,11 +53,6 @@ if (process.env.NODE_APP_INSTANCE === '1') {
         }
 
         redis.set('rqs_last', JSON.stringify(requests_last));
-
-        redis.incrBy('bots_online', 0);
-        redis.incrBy('bots_total', 0);
-        redis.incrBy('queue_size', 0);
-        redis.incrBy('queue_concurrency', 0);
 
     }, 1000);
 
