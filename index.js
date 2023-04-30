@@ -261,7 +261,7 @@ if (nodeCluster.isMaster) {
         const requests_last = JSON.parse(await redis.get('rqs_last'));
 
         const sum = requests_last.reduce((a, b) => a + b, 0);
-        const avg = (sum / times.length) || 0;
+        const avg = (sum / requests_last.length) || 0;
 
         res.json({
             bots_online: await redis.get('bots_online'),
