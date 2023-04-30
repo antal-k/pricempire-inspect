@@ -28,7 +28,7 @@ if (process.env.NODE_APP_INSTANCE === '1') {
         const requests = await redis.get('requests');
         redis.set('requests', 0);
 
-        let requests_last = await redis.get('requests_last');
+        let requests_last = await redis.get('rqs_last');
 
         if (!requests_last) {
             requests_last = [];
@@ -47,7 +47,7 @@ if (process.env.NODE_APP_INSTANCE === '1') {
             }
         }
 
-        redis.set('requests_last', JSON.stringify(requests_last));
+        redis.set('rqs_last', JSON.stringify(requests_last));
 
         redis.incrBy('bots_online', 0);
         redis.incrBy('bots_total', 0);
@@ -258,7 +258,7 @@ if (nodeCluster.isMaster) {
     });
 
     app.get('/stats', async (req, res) => {
-        const requests_last = JSON.parse(await redis.get('requests_last'));
+        const requests_last = JSON.parse(await redis.get('rqs_last'));
 
         const sum = requests_last.reduce((a, b) => a + b, 0);
         const avg = (sum / times.length) || 0;
