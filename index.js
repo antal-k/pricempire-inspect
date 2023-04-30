@@ -23,6 +23,9 @@ const winston = require('winston'),
     os = require('os');
 const nodeCluster = require('cluster');
 
+const startTime = new Date();
+
+
 if (process.env.NODE_APP_INSTANCE === '1') {
     setInterval(async () => {
 
@@ -69,6 +72,14 @@ if (process.env.NODE_APP_INSTANCE === '1') {
     }, 1000);
 
 }
+setInterval(() => {
+    if (
+        (new Date().getTime() - startTime.getTime()) / 1000 > 300 &&
+        botController.getReadyAmount() === 0
+    ) {
+        process.exit();
+    }
+}, 1000);
 
 setInterval(async () => {
     setTimeout(() => {
