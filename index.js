@@ -14,13 +14,13 @@ const winston = require('winston'),
     InspectURL = require('./lib/inspect_url'),
     botController = new (require('./lib/bot_controller'))(),
     CONFIG = require(args.config),
+    redis = new (require('./lib/redis'))(CONFIG.redis_url),
     postgres = new (require('./lib/postgres'))(CONFIG.database_url, CONFIG.enable_bulk_inserts),
     gameData = new (require('./lib/game_data'))(CONFIG.game_files_update_interval, CONFIG.enable_game_file_updates),
     errors = require('./errors'),
     Job = require('./lib/job'),
     fs = require('fs'),
     os = require('os');
-
 const nodeCluster = require('cluster');
 
 if (nodeCluster.isMaster) {
@@ -42,6 +42,12 @@ if (nodeCluster.isMaster) {
             });
         }
     })();
+
+    setInterval(async () => {
+        const requests = await redis.get('requests');
+        await redis.set('requests', 0);
+        redis.set('requests_last', requests);
+    }, 1000);
 
 
 } else {
@@ -93,7 +99,7 @@ if (nodeCluster.isMaster) {
         });
     }, process.env.NODE_APP_INSTANCE * 2000);
 
-    setTimeout(()=>{
+    setTimeout(() => {
         process.exit(1);
     }, CONFIG.cluster_life * 60 * 60 * 1000 + (parseInt(process.env.NODE_APP_INSTANCE) * 15 * 60 * 1000)); // delay the clusters 15mins
 
@@ -163,7 +169,7 @@ if (nodeCluster.isMaster) {
     app.get('/float', processRequest);
     app.post('/float', processRequest);
     app.get('/', processRequest);
-    
+
     app.post('/bulk', (req, res) => {
         if (!req.body || (CONFIG.bulk_key && req.body.bulk_key != CONFIG.bulk_key)) {
             return errors.BadSecret.respond(res);
@@ -204,13 +210,14 @@ if (nodeCluster.isMaster) {
         }
     });
 
-    app.get('/stats', (req, res) => {
+    app.get('/stats', async (req, res) => {
         res.json({
             bots_online: botController.getReadyAmount(),
             bots_total: botController.bots.length,
             queue_size: queue.queue.length,
             queue_concurrency: queue.concurrency,
             cluster_id: process.env.NODE_APP_INSTANCE,
+            requests: await redis.get('requests_last'),
         });
     });
 
@@ -304,6 +311,9 @@ function canSubmitPrice(key, link, price) {
 }
 
 function processRequest(req, res) {
+
+    redis.incr('requests');
+
     // Get and parse parameters
     let link;
 
