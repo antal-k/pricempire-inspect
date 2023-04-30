@@ -25,9 +25,9 @@ const nodeCluster = require('cluster');
 
 if (process.env.NODE_APP_INSTANCE === '1') {
     setInterval(async () => {
+
         const requests = await redis.get('requests');
         redis.set('requests', 0);
-
 
         const bots_online = await redis.get('bots_online');
         redis.set('bots_online', 0);
@@ -71,10 +71,12 @@ if (process.env.NODE_APP_INSTANCE === '1') {
 }
 
 setInterval(async () => {
-    redis.incrBy('bots_online', parseInt(botController.getReadyAmount()));
-    redis.incrBy('bots_total', parseInt(botController.bots.length));
-    redis.incrBy('queue_size', parseInt(queue.queue.length));
-    redis.incrBy('queue_concurrency', parseInt(queue.concurrency));
+    setTimeout(() => {
+        redis.incrBy('bots_online', parseInt(botController.getReadyAmount()));
+        redis.incrBy('bots_total', parseInt(botController.bots.length));
+        redis.incrBy('queue_size', parseInt(queue.queue.length));
+        redis.incrBy('queue_concurrency', parseInt(queue.concurrency));
+    }, 200);
 }, 1000);
 /*
 res.json({
