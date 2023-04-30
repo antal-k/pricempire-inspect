@@ -28,10 +28,10 @@ if (process.env.NODE_APP_INSTANCE === '1') {
         const requests = await redis.get('requests');
         redis.set('requests', 0);
 
-        redis.incrBy('bots_online', 0);
-        redis.incrBy('bots_total', 0);
-        redis.incrBy('queue_size', 0);
-        redis.incrBy('queue_concurrency', 0);
+        redis.set('bots_online', 0);
+        redis.set('bots_total', 0);
+        redis.set('queue_size', 0);
+        redis.set('queue_concurrency', 0);
 
         let requests_last = await redis.get('rqs_last');
 
