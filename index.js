@@ -72,15 +72,6 @@ if (process.env.NODE_APP_INSTANCE === '1') {
     }, 1000);
 
 }
-setInterval(() => {
-    if (
-        (new Date().getTime() - startTime.getTime()) / 1000 > 300 &&
-        botController.getReadyAmount() === 0
-    ) {
-        process.exit();
-    }
-}, 1000);
-
 setInterval(async () => {
     setTimeout(() => {
         redis.incrBy('bots_online', parseInt(botController.getReadyAmount()));
@@ -123,6 +114,16 @@ if (nodeCluster.isMaster) {
 
 
 } else {
+
+    setInterval(() => {
+        if (
+            (new Date().getTime() - startTime.getTime()) / 1000 > 300 &&
+            botController.getReadyAmount() === 0
+        ) {
+            process.exit();
+        }
+    }, 1000);
+
 
     if (CONFIG.max_simultaneous_requests === undefined) {
         CONFIG.max_simultaneous_requests = 1;
