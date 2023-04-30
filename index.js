@@ -28,7 +28,7 @@ if (process.env.NODE_APP_INSTANCE === '1') {
         const requests = await redis.get('requests');
         redis.set('requests', 0);
 
-        let requests_last = await this.get('requests_last');
+        let requests_last = await redis.get('requests_last');
 
         if (!requests_last) {
             requests_last = [];
