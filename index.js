@@ -27,9 +27,52 @@ if (process.env.NODE_APP_INSTANCE === '1') {
     setInterval(async () => {
         const requests = await redis.get('requests');
         redis.set('requests', 0);
-        redis.set('requests_last', requests);
+
+        let requests_last = await this.get('requests_last');
+
+        if (!requests_last) {
+            requests_last = [];
+        } else {
+            requests_last = JSON.parse(requests_last);
+
+            requests_last.reverse();
+
+            requests_last.push(requests);
+
+            requests_last.reverse();
+
+            if (requests_last.length > 50) {
+                requests_last.length = 50;
+            }
+        }
+
+        redis.set('requests_last', JSON.stringify(requests_last));
+
+        redis.incrBy('bots_online', 0);
+        redis.incrBy('bots_total', 0);
+        redis.incrBy('queue_size', 0);
+        redis.incrBy('queue_concurrency', 0);
+
     }, 1000);
+
 }
+
+setInterval(async () => {
+    redis.incrBy('bots_online', botController.getReadyAmount());
+    redis.incrBy('bots_total', botController.bots.length);
+    redis.incrBy('queue_size', queue.queue.length);
+    redis.incrBy('queue_concurrency', queue.concurrency);
+}, 1000);
+/*
+res.json({
+    bots_online: botController.getReadyAmount(),
+    bots_total: botController.bots.length,
+    queue_size: queue.queue.length,
+    queue_concurrency: queue.concurrency,
+    cluster_id: process.env.NODE_APP_INSTANCE,
+    requests: await redis.get('requests_last'),
+});
+*/
 
 if (nodeCluster.isMaster) {
 
@@ -214,13 +257,19 @@ if (nodeCluster.isMaster) {
     });
 
     app.get('/stats', async (req, res) => {
+        const requests_last = JSON.parse(await redis.get('requests_last'));
+
+        const sum = requests_last.reduce((a, b) => a + b, 0);
+        const avg = (sum / times.length) || 0;
+
         res.json({
-            bots_online: botController.getReadyAmount(),
-            bots_total: botController.bots.length,
-            queue_size: queue.queue.length,
-            queue_concurrency: queue.concurrency,
+            bots_online: await redis.get('bots_online'),
+            bots_total: await redis.get('bots_total'),
+            queue_size: await redis.get('queue_size'),
+            queue_concurrency: await redis.get('queue_concurrency'),
+            requests: requests_last,
+            avgTPS: avg,
             cluster_id: process.env.NODE_APP_INSTANCE,
-            requests: await redis.get('requests_last'),
         });
     });
 
