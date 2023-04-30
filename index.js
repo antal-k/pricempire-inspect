@@ -59,10 +59,10 @@ if (process.env.NODE_APP_INSTANCE === '1') {
 }
 
 setInterval(async () => {
-    redis.incrBy('bots_online', botController.getReadyAmount());
-    redis.incrBy('bots_total', botController.bots.length);
-    redis.incrBy('queue_size', queue.queue.length);
-    redis.incrBy('queue_concurrency', queue.concurrency);
+    redis.incrBy('bots_online', parseInt(botController.getReadyAmount()));
+    redis.incrBy('bots_total', parseInt(botController.bots.length));
+    redis.incrBy('queue_size', parseInt(queue.queue.length));
+    redis.incrBy('queue_concurrency', parseInt(queue.concurrency));
 }, 1000);
 /*
 res.json({
