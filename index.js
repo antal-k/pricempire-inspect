@@ -78,10 +78,12 @@ if (process.env.NODE_APP_INSTANCE === '1') {
 new cron(
     '* * * * * *',
     async () => {
-        redis.incrBy('bots_online', parseInt(botController.getReadyAmount()));
-        redis.incrBy('bots_total', parseInt(botController.bots.length));
-        redis.incrBy('queue_size', parseInt(queue.queue.length));
-        redis.incrBy('queue_concurrency', parseInt(queue.concurrency));
+        setTimeout(() => {
+            redis.incrBy('bots_online', parseInt(botController.getReadyAmount()));
+            redis.incrBy('bots_total', parseInt(botController.bots.length));
+            redis.incrBy('queue_size', parseInt(queue.queue.length));
+            redis.incrBy('queue_concurrency', parseInt(queue.concurrency));
+        }, 200);
     },
     null,
     true
