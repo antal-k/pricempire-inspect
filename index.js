@@ -20,6 +20,7 @@ const winston = require('winston'),
     errors = require('./errors'),
     Job = require('./lib/job'),
     fs = require('fs'),
+    cron = require('cron').CronJob,
     os = require('os');
 const nodeCluster = require('cluster');
 
@@ -27,59 +28,65 @@ const startTime = new Date();
 
 
 if (process.env.NODE_APP_INSTANCE === '1') {
-    setInterval(async () => {
+    new cron(
+        '* * * * * *',
+        async () => {
+            const requests = await redis.get('requests');
+            redis.set('requests', 0);
 
-        const requests = await redis.get('requests');
-        redis.set('requests', 0);
+            const bots_online = await redis.get('bots_online');
+            redis.set('bots_online', 0);
+            redis.set('bots_online_last', bots_online);
 
-        const bots_online = await redis.get('bots_online');
-        redis.set('bots_online', 0);
-        redis.set('bots_online_last', bots_online);
+            const bots_total = await redis.get('bots_total');
+            redis.set('bots_total', 0);
+            redis.set('bots_total_last', bots_total);
 
-        const bots_total = await redis.get('bots_total');
-        redis.set('bots_total', 0);
-        redis.set('bots_total_last', bots_total);
+            const queue_size = await redis.get('queue_size');
+            redis.set('queue_size', 0);
+            redis.set('queue_size_last', queue_size);
 
-        const queue_size = await redis.get('queue_size');
-        redis.set('queue_size', 0);
-        redis.set('queue_size_last', queue_size);
+            const queue_concurrency = await redis.get('queue_concurrency');
+            redis.set('queue_concurrency', 0);
+            redis.set('queue_concurrency_last', queue_concurrency);
 
-        const queue_concurrency = await redis.get('queue_concurrency');
-        redis.set('queue_concurrency', 0);
-        redis.set('queue_concurrency_last', queue_concurrency);
+            let requests_last = await redis.get('rqs_last');
 
+            if (!requests_last) {
+                requests_last = [];
+            } else {
+                requests_last = JSON.parse(requests_last);
 
-        let requests_last = await redis.get('rqs_last');
+                requests_last.reverse();
 
-        if (!requests_last) {
-            requests_last = [];
-        } else {
-            requests_last = JSON.parse(requests_last);
+                requests_last.push(requests);
 
-            requests_last.reverse();
+                requests_last.reverse();
 
-            requests_last.push(requests);
-
-            requests_last.reverse();
-
-            if (requests_last.length > 50) {
-                requests_last.length = 50;
+                if (requests_last.length > 50) {
+                    requests_last.length = 50;
+                }
             }
-        }
 
-        redis.set('rqs_last', JSON.stringify(requests_last));
-
-    }, 1000);
+            redis.set('rqs_last', JSON.stringify(requests_last));
+        },
+        null,
+        true
+    );
 
 }
-setInterval(async () => {
-    setTimeout(() => {
-        redis.incrBy('bots_online', parseInt(botController.getReadyAmount()));
-        redis.incrBy('bots_total', parseInt(botController.bots.length));
-        redis.incrBy('queue_size', parseInt(queue.queue.length));
-        redis.incrBy('queue_concurrency', parseInt(queue.concurrency));
-    }, 2500);
-}, 5000);
+new cron(
+    '* * * * * *',
+    async () => {
+        setTimeout(() => {
+            redis.incrBy('bots_online', parseInt(botController.getReadyAmount()));
+            redis.incrBy('bots_total', parseInt(botController.bots.length));
+            redis.incrBy('queue_size', parseInt(queue.queue.length));
+            redis.incrBy('queue_concurrency', parseInt(queue.concurrency));
+        }, 200);
+    }
+);
+
 /*
 res.json({
     bots_online: botController.getReadyAmount(),
