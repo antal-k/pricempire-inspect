@@ -78,7 +78,7 @@ setInterval(async () => {
         redis.incrBy('bots_total', parseInt(botController.bots.length));
         redis.incrBy('queue_size', parseInt(queue.queue.length));
         redis.incrBy('queue_concurrency', parseInt(queue.concurrency));
-    }, 200);
+    }, 500);
 }, 1000);
 /*
 res.json({
