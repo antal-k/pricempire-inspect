@@ -69,7 +69,7 @@ if (process.env.NODE_APP_INSTANCE === '1') {
 
         redis.set('rqs_last', JSON.stringify(requests_last));
 
-    }, 1000);
+    }, 5000);
 
 }
 setInterval(async () => {
@@ -78,8 +78,8 @@ setInterval(async () => {
         redis.incrBy('bots_total', parseInt(botController.bots.length));
         redis.incrBy('queue_size', parseInt(queue.queue.length));
         redis.incrBy('queue_concurrency', parseInt(queue.concurrency));
-    }, 500);
-}, 1000);
+    }, 2500);
+}, 5000);
 /*
 res.json({
     bots_online: botController.getReadyAmount(),
