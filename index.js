@@ -84,7 +84,9 @@ new cron(
             redis.incrBy('queue_size', parseInt(queue.queue.length));
             redis.incrBy('queue_concurrency', parseInt(queue.concurrency));
         }, 200);
-    }
+    },
+    null,
+    true
 );
 
 /*
