@@ -78,27 +78,14 @@ if (process.env.NODE_APP_INSTANCE === '1') {
 new cron(
     '* * * * * *',
     async () => {
-        setTimeout(() => {
-            redis.incrBy('bots_online', parseInt(botController.getReadyAmount()));
-            redis.incrBy('bots_total', parseInt(botController.bots.length));
-            redis.incrBy('queue_size', parseInt(queue.queue.length));
-            redis.incrBy('queue_concurrency', parseInt(queue.concurrency));
-        }, 200);
+        redis.incrBy('bots_online', parseInt(botController.getReadyAmount()));
+        redis.incrBy('bots_total', parseInt(botController.bots.length));
+        redis.incrBy('queue_size', parseInt(queue.queue.length));
+        redis.incrBy('queue_concurrency', parseInt(queue.concurrency));
     },
     null,
     true
 );
-
-/*
-res.json({
-    bots_online: botController.getReadyAmount(),
-    bots_total: botController.bots.length,
-    queue_size: queue.queue.length,
-    queue_concurrency: queue.concurrency,
-    cluster_id: process.env.NODE_APP_INSTANCE,
-    requests: await redis.get('requests_last'),
-});
-*/
 
 if (nodeCluster.isMaster) {
 
