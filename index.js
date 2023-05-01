@@ -69,7 +69,7 @@ if (process.env.NODE_APP_INSTANCE === '1') {
 
         redis.set('rqs_last', JSON.stringify(requests_last));
 
-    }, 5000);
+    }, 1000);
 
 }
 setInterval(async () => {
