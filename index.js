@@ -116,7 +116,7 @@ if (nodeCluster.isMaster) {
     setInterval(() => {
         if (
             (new Date().getTime() - startTime.getTime()) / 1000 > 300 &&
-            botController.getReadyAmount() === 0
+            botController.getReadyAmount() < (CONFIG.bots_count / CONFIG.cluster_count * 0.1)
         ) {
             process.exit();
         }
