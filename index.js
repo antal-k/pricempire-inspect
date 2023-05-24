@@ -410,7 +410,7 @@ function processRequest(req, res) {
 
     let price;
 
-    if (canSubmitPrice(req.query.priceKey, link, req.query.price)) {
+    if (canSubmitPrice(null, link, req.query?.price || req.body?.price)) {
         price = parseInt(req.query?.price || req.body?.price) || null;
     }
 
