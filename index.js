@@ -265,7 +265,7 @@ if (nodeCluster.isMaster) {
             let price;
 
             if (canSubmitPrice(req.body.priceKey, link, data.price)) {
-                price = parseInt(req.query.price);
+                price = parseInt(data.price);
             }
 
             winston.info(link);
@@ -384,7 +384,7 @@ async function handleJob(job) {
 }
 
 function canSubmitPrice(key, link, price) {
-    return CONFIG.price_key && key === CONFIG.price_key && price && link.isMarketLink() && utils.isOnlyDigits(price);
+    return price && link.isMarketLink() && utils.isOnlyDigits(price); // CONFIG.price_key && key === CONFIG.price_key &&
 }
 
 function processRequest(req, res) {
@@ -411,7 +411,7 @@ function processRequest(req, res) {
     let price;
 
     if (canSubmitPrice(req.query.priceKey, link, req.query.price)) {
-        price = parseInt(req.query.price);
+        price = parseInt(req.query?.price || req.body?.price) || null;
     }
 
     job.add(link, price);
