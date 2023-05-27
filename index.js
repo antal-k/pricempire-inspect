@@ -27,6 +27,53 @@ const nodeCluster = require('cluster');
 const startTime = new Date();
 
 
+const currencies = {
+    "1": "USD",
+    "2": "GBP",
+    "3": "EUR",
+    "4": "CHF",
+    "5": "RUB",
+    "6": "PLN",
+    "7": "BRL",
+    "8": "JPY",
+    "9": "NOK",
+    "10": "IDR",
+    "11": "MYR",
+    "12": "PHP",
+    "13": "SGD",
+    "14": "THB",
+    "15": "VND",
+    "16": "KRW",
+    "17": "TRY",
+    "18": "UAH",
+    "19": "MXN",
+    "20": "CAD",
+    "21": "AUD",
+    "22": "NZD",
+    "23": "CNY",
+    "24": "INR",
+    "25": "CLP",
+    "26": "PEN",
+    "27": "COP",
+    "28": "ZAR",
+    "29": "HKD",
+    "30": "TWD",
+    "31": "SAR",
+    "32": "AED",
+    "34": "ARS",
+    "35": "ILS",
+    "36": "BYN",
+    "37": "KZT",
+    "38": "KWD",
+    "39": "QAR",
+    "40": "CRC",
+    "41": "UYU",
+};
+
+let rates = {};
+
+loadRates();
+
 if (process.env.NODE_APP_INSTANCE === '1') {
     new cron(
         '* * * * * *',
@@ -89,6 +136,24 @@ new cron(
     true
 );
 
+new cron(
+    '0 * * * * *',
+    async () => {
+        await loadRates();
+    },
+    null,
+    true
+);
+
+async function loadRates() {
+    const compressed = await redis.get('meta:currencies:v2');
+    if (compressed) {
+        let data = zlib
+            .inflateSync(Buffer.from(compressed, 'base64'))
+            .toString();
+        rates = JSON.parse(data);
+    }
+}
 if (nodeCluster.isMaster) {
 
     (async () => {
@@ -411,7 +476,13 @@ function processRequest(req, res) {
     let price;
 
     if (canSubmitPrice(null, link, req.query?.price || req.body?.price)) {
+
+
         price = parseInt(req.query?.price || req.body?.price) || null;
+        const currency = req.query?.currency;
+        if (currency) {
+            price /= rates[this.currencies[parseInt(currency) - 2000]];
+        }
     }
 
     job.add(link, price);
