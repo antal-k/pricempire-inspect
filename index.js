@@ -481,7 +481,7 @@ function processRequest(req, res) {
         price = parseInt(req.query?.price || req.body?.price) || null;
         const currency = req.query?.currency;
         if (currency) {
-            price /= rates[this.currencies[parseInt(currency) - 2000]];
+            price /= rates[currencies[parseInt(currency) - 2000]];
         }
     }
 
