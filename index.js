@@ -19,6 +19,7 @@ const winston = require('winston'),
     gameData = new (require('./lib/game_data'))(CONFIG.game_files_update_interval, CONFIG.enable_game_file_updates),
     errors = require('./errors'),
     Job = require('./lib/job'),
+    zlib = require('zlib'),
     fs = require('fs'),
     cron = require('cron').CronJob,
     os = require('os');
