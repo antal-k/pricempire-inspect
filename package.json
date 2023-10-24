@@ -18,7 +18,7 @@
     "cron": "^2.3.0",
     "express": "^4.17.1",
     "express-rate-limit": "^5.2.6",
-    "globaloffensive": "^3.0.0",
+    "globaloffensive": "^2.3.1",
     "long": "^3.2.0",
     "pg": "^8.10.0",
     "redis": "^4.6.6",
