@@ -27,7 +27,6 @@ const nodeCluster = require('cluster');
 
 const startTime = new Date();
 
-
 const currencies = {
     "1": "USD",
     "2": "GBP",
