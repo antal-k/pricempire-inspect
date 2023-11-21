@@ -214,16 +214,16 @@ if (nodeCluster.isMaster) {
             lines = lines.slice(clusterMax - perCluster, clusterMax);
 
             
-            console.log('---------------------------');
-            console.table({
-                instanceId: process.env.NODE_APP_INSTANCE,
-                linesLength: lines.length,
-                clusterMax,
-                perCluster,
-                clusterCount,
-                botsCount,
-            });
-            console.log('---------------------------');
+            // console.log('---------------------------');
+            // console.table({
+            //     instanceId: process.env.NODE_APP_INSTANCE,
+            //     linesLength: lines.length,
+            //     clusterMax,
+            //     perCluster,
+            //     clusterCount,
+            //     botsCount,
+            // });
+            // console.log('---------------------------');
             
 
             for await (const [index, line] of lines.entries()) {
