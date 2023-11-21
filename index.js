@@ -154,6 +154,7 @@ async function loadRates() {
         rates = JSON.parse(data);
     }
 }
+
 if (nodeCluster.isMaster) {
 
     (async () => {
@@ -205,23 +206,25 @@ if (nodeCluster.isMaster) {
                 return;
             }
 
-            const perCluster = CONFIG.bots_count / CONFIG.cluster_count;
+            var lines = data.split('\n');
+            const lineCount = lines.length;
+            const perCluster = lineCount / CONFIG.cluster_count;
             const clusterMax = perCluster * ((process.env.NODE_APP_INSTANCE * 1) + 1);
 
-            const lines = data.split('\n').slice(clusterMax - perCluster, clusterMax);
+            lines = lines.slice(clusterMax - perCluster, clusterMax);
 
-            /*
-            console.log('---------------------------');
-            console.table({
-                instanceId: process.env.NODE_APP_INSTANCE,
-                linesLength: lines.length,
-                clusterMax,
-                perCluster,
-                clusterCount,
-                botsCount,
-            });
-            console.log('---------------------------');
-            */
+            
+            // console.log('---------------------------');
+            // console.table({
+            //     instanceId: process.env.NODE_APP_INSTANCE,
+            //     linesLength: lines.length,
+            //     clusterMax,
+            //     perCluster,
+            //     clusterCount,
+            //     botsCount,
+            // });
+            // console.log('---------------------------');
+            
 
             for await (const [index, line] of lines.entries()) {
                 const [user, pass, email, ep] = line.split(':');
