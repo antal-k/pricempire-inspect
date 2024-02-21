@@ -367,7 +367,7 @@ if (nodeCluster.isMaster) {
     });
 
     const http_server = require('http').Server(app);
-    http_server.listen(CONFIG.http.port);
+    http_server.listen(CONFIG.http.port, "0.0.0.0");
     winston.info('Listening for HTTP on port: ' + CONFIG.http.port);
 
 
